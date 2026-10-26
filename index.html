@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Наш ресторан ❤️</title>
+<style>
+:root{--bg:#fff9f5;--ink:#3b2630;--accent:#a94162;--soft:#f7e6e9;--card:#fff;--muted:#7e6970}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif}header{text-align:center;padding:55px 20px 32px;background:linear-gradient(135deg,#fff0f2,#fffaf1)}.eyebrow{letter-spacing:.19em;text-transform:uppercase;font-size:11px;color:var(--accent)}h1{font-family:Georgia,serif;font-size:clamp(35px,8vw,60px);margin:14px 0}header p{color:var(--muted);max-width:520px;margin:auto;line-height:1.6}.wrap{max-width:1000px;margin:auto;padding:28px 18px 100px}.tabs{display:flex;gap:9px;overflow-x:auto;padding:4px 0 20px}.tab{border:1px solid #ead5da;background:white;border-radius:30px;padding:11px 18px;white-space:nowrap;cursor:pointer;color:var(--ink)}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.dish{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 8px 28px #5933440d;display:flex;flex-direction:column}.dish img{width:100%;height:175px;object-fit:cover}.dish .content{padding:18px;display:flex;flex-direction:column;gap:10px;flex:1}.dish h3{font-family:Georgia,serif;font-size:21px;margin:0}.dish p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;flex:1}.action{border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}.action:hover{filter:brightness(.94)}.cart-trigger{position:fixed;bottom:18px;right:18px;box-shadow:0 8px 30px #6b29444a;z-index:2}.modal{position:fixed;inset:0;background:#2b1523a6;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal.open{display:flex}.panel{background:#fff;border-radius:22px;padding:25px;width:min(100%,500px);max-height:90vh;overflow:auto}.panel-head{display:flex;justify-content:space-between;align-items:center}.panel h2{font-family:Georgia,serif;margin:0 0 16px}.close{border:0;background:#f6e9ec;border-radius:50%;font-size:22px;width:36px;height:36px;cursor:pointer}.cart-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #f1e6e9;padding:13px 0}.qty{display:flex;gap:8px;align-items:center}.qty button{border:0;background:var(--soft);width:28px;height:28px;border-radius:8px;cursor:pointer}.field{display:block;width:100%;padding:12px;border:1px solid #e5cbd3;border-radius:12px;margin:12px 0;font:inherit}.hint{font-size:12px;color:var(--muted);line-height:1.5}.empty{text-align:center;color:var(--muted);padding:40px}footer{text-align:center;color:var(--muted);font-size:13px;padding:20px}button:focus-visible{outline:3px solid #dca6b5;outline-offset:2px}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Особенное место только для нас</div><h1 id="restaurantName"></h1><p id="welcome"></p></header>
+<main class="wrap"><nav class="tabs" id="tabs" aria-label="Категории меню"></nav><section class="grid" id="dishes" aria-live="polite"></section></main>
+<button class="action cart-trigger" id="openCart">🧺 Корзина · <span id="cartCount">0</span></button>
+<div class="modal" id="cartModal" role="dialog" aria-modal="true" aria-label="Корзина"><div class="panel"><div class="panel-head"><h2>Наш заказ ❤️</h2><button class="close" id="closeCart" aria-label="Закрыть">×</button></div><div id="cartItems"></div><label for="message">Пожелание к заказу</label><textarea class="field" id="message" rows="3" placeholder="Например: и побольше объятий!"></textarea><button class="action" id="sendOrder" style="width:100%">Отправить заказ 💌</button><p class="hint">В демонстрации заказ отправляется через Telegram или системное меню «Поделиться». Для коммерческой версии можно подключить отдельные уведомления.</p></div></div>
+<footer>С любовью, специально для тебя ♡</footer>
+<script>
+/* НАСТРОЙКИ КЛИЕНТА: измените только этот блок. Фото можно заменить своими URL. */
+const CONFIG = {
+  restaurantName: 'Ресторан для тебя ❤️',
+  welcome: 'Здесь каждое блюдо приготовлено с любовью. Выбирай, чего хочется сегодня!',
+  orderRecipient: '@your_telegram_username', // Кому адресован заказ: замените на свой @username
+  dishes: [
+    {id:'1',name:'Паста с любовью',category:'Основное',description:'Нежная сливочная паста для самого уютного вечера.',image:'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=800&q=80'},
+    {id:'2',name:'Пицца для двоих',category:'Основное',description:'Хрустящая корочка и очень много сыра.',image:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80'},
+    {id:'3',name:'Сырники с заботой',category:'Завтраки',description:'Подаются с улыбкой и чем-нибудь сладким.',image:'https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800&q=80'},
+    {id:'4',name:'Клубничное настроение',category:'Десерты',description:'Десерт, который хочется разделить вместе.',image:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=80'},
+    {id:'5',name:'Капучино и объятия',category:'Напитки',description:'Тёплый кофе и время только для нас.',image:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80'}
+  ]
+};
+const $=id=>document.getElementById(id);
+const cart=new Map();let category='Все';
+$('restaurantName').textContent=CONFIG.restaurantName;$('welcome').textContent=CONFIG.welcome;
+const categories=['Все',...new Set(CONFIG.dishes.map(d=>d.category))];
+function render(){
+ $('tabs').replaceChildren();categories.forEach(c=>{const b=document.createElement('button');b.className='tab'+(category===c?' active':'');b.textContent=c;b.onclick=()=>{category=c;render()};$('tabs').append(b)});
+ $('dishes').replaceChildren();CONFIG.dishes.filter(d=>category==='Все'||d.category===category).forEach(d=>{
+ const article=document.createElement('article');article.className='dish';const img=document.createElement('img');img.src=d.image;img.alt=d.name;img.loading='lazy';img.onerror=()=>{img.style.display='none'};
+ const content=document.createElement('div');content.className='content';const h=document.createElement('h3');h.textContent=d.name;const p=document.createElement('p');p.textContent=d.description;const button=document.createElement('button');button.className='action';button.textContent='Добавить в заказ +';button.onclick=()=>{cart.set(d.id,(cart.get(d.id)||0)+1);updateCount();button.textContent='Добавлено ✓';setTimeout(()=>button.textContent='Добавить в заказ +',850)};content.append(h,p,button);article.append(img,content);$('dishes').append(article)
+ });
+}
+function updateCount(){$('cartCount').textContent=[...cart.values()].reduce((a,b)=>a+b,0)}
+function renderCart(){const el=$('cartItems');el.replaceChildren();if(!cart.size){const p=document.createElement('p');p.className='empty';p.textContent='Здесь пока пусто. Выбери что-нибудь вкусное!';el.append(p)}for(const [id,count] of cart){const dish=CONFIG.dishes.find(d=>d.id===id);if(!dish)continue;const row=document.createElement('div');row.className='cart-item';const name=document.createElement('span');name.textContent=dish.name;const qty=document.createElement('div');qty.className='qty';const minus=document.createElement('button');minus.textContent='−';minus.setAttribute('aria-label','Убрать одну порцию');minus.onclick=()=>changeQty(id,-1);const plus=document.createElement('button');plus.textContent='+';plus.setAttribute('aria-label','Добавить одну порцию');plus.onclick=()=>changeQty(id,1);const n=document.createElement('span');n.textContent=count;qty.append(minus,n,plus);row.append(name,qty);el.append(row)}}
+function changeQty(id,delta){const n=(cart.get(id)||0)+delta;if(n<=0)cart.delete(id);else cart.set(id,n);updateCount();renderCart()}
+function closeCart(){$('cartModal').classList.remove('open')}
+$('openCart').onclick=()=>{$('cartModal').classList.add('open');renderCart()};$('closeCart').onclick=closeCart;$('cartModal').onclick=e=>{if(e.target===$('cartModal'))closeCart()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCart()});
+$('sendOrder').onclick=async()=>{if(!cart.size){alert('Сначала добавь что-нибудь в корзину ❤️');return}const lines=[...cart].map(([id,n])=>`• ${CONFIG.dishes.find(d=>d.id===id)?.name||'Блюдо'} × ${n}`);const note=$('message').value.trim();const order=`💌 Заказ из «${CONFIG.restaurantName}»\n\n${lines.join('\n')}${note?'\n\nПожелание: '+note:''}`;const recipient=CONFIG.orderRecipient.replace(/^@/,'');const fullText=`Для ${CONFIG.orderRecipient}:\n\n${order}`;try{if(navigator.share){await navigator.share({title:'Наш заказ',text:fullText});return}}catch(e){if(e.name==='AbortError')return}try{await navigator.clipboard.writeText(fullText);alert('Заказ скопирован! Сейчас откроется Telegram — вставь текст в сообщение.');window.open('https://t.me/'+encodeURIComponent(recipient),'_blank','noopener')}catch(e){window.location.href='https://t.me/share/url?text='+encodeURIComponent(fullText)}};
+render();updateCount();
+</script>
+</body></html>
